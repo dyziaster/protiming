@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,63 +19,50 @@ import java.io.OutputStream;
  */
 public class SettingsActivity extends Activity{
 
-    public static final int MESSAGE_READ = 9999;
-    BluetoothSocket mmSocket;
 
-    private class ConnectedThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
-        Handler mHandler;
 
-        public ConnectedThread(BluetoothSocket socket,Handler mHandler) {
-            this.mHandler = mHandler;
-            mmSocket = socket;
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
+    private Button discoverButton;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings);
 
-            // Get the input and output streams, using temp objects because
-            // member streams are final
-            try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) {/*Asd*/}
 
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
-        }
+        discoverButton = (Button)findViewById(R.id.discoverButton);
+        discoverButton.setOnClickListener(new View.OnClickListener() {
 
-        public void run() {
-            byte[] buffer = new byte[1024];  // buffer store for the stream
-            int bytes; // bytes returned from read()
-
-            // Keep listening to the InputStream until an exception occurs
-            while (true) {
-                try {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-                    // Send the obtained bytes to the UI activity
-                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
-                } catch (IOException e) {
-                    break;
-                }
+            public void onClick(View view) {
+                BluetoothThread.discoverDevices();
+                Toast.makeText(getApplicationContext(), "discovering", Toast.LENGTH_LONG).show();
             }
-        }
-
-        /* Call this from the main activity to send data to the remote device */
-        public void write(byte[] bytes) {
-            try {
-                mmOutStream.write(bytes);
-            } catch (IOException e) {/*Asd*/ }
-        }
-
-        /* Call this from the main activity to shutdown the connection */
-        public void cancel() {
-            try {
-                mmSocket.close();
-            } catch (IOException e) {/*Asd*/ }
-        }
+        });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // The activity is about to become visible.
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // The activity has become visible (it is now "resumed").
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Another activity is taking focus (this activity is about to be "paused").
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // The activity is no longer visible (it is now "stopped")
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // The activity is about to be destroyed.
+    }
+
 
 }
