@@ -1,23 +1,11 @@
 package com.example.darek.protiming;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -42,6 +30,8 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
 
         timerValue = (TextView)findViewById(R.id.timerValue);
 
@@ -68,23 +58,15 @@ public class MainActivity extends Activity {
             }
         });
 
-        settingsButton = (Button)findViewById(R.id.settingsButton);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View view) {
+    }
 
+    public void startSettings(View view){
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.layout, new SettingsFragment());
-                transaction.addToBackStack("timerToSettings");
-                transaction.commit();
-
-            }
-        });
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
 
 
-        setContentView(R.layout.timer);
     }
 
     private Runnable updateTimerThread = new Runnable() {
