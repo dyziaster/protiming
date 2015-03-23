@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#000000"
+    android:layout_height="match_parent" >
+
+
+    <Button
+        android:id="@+id/discoverButton"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/discoverButtonLabel" />
+
+
+    <Button
+        android:id="@+id/transmisionButton"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/checkTransmisionButtonLabel" />
+
+</RelativeLayout>
