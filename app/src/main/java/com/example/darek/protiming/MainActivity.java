@@ -25,11 +25,13 @@ public class MainActivity extends Activity {
     private TextView timerValue;
     private long startTime = 0L;
     private Handler customHandler = new Handler();
+    private BluetoothManager manager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        manager = BluetoothManager.getInstance();
 
         paused = true;
         timerValue = (TextView)findViewById(R.id.timerValue);
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
+                manager.runConnectedThread(); // before set bluetooth start must be disabled
                 startTimer();
             }
         });

@@ -2,6 +2,7 @@ package com.example.darek.protiming;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
@@ -28,8 +29,7 @@ public class SettingsActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) { // must enable BT first
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
-        manager = new BluetoothManager();
-
+        manager = BluetoothManager.getInstance();
         if(!manager.bluetoothEnabled()){
             Log.i("SettingsActivity","bluetooth turned off");
             return;

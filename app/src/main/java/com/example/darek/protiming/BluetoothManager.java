@@ -20,9 +20,21 @@ public class BluetoothManager {
 
     private BluetoothAdapter adapter;
     private Set<BluetoothDevice> devices;
-    private ConnectThread connectedThread;
+    private ConnectThread connectThread;
+    private ConnectedThread connectedThread;
+    private static BluetoothManager instance;
 
-    public BluetoothManager(){
+
+    public static BluetoothManager getInstance(){
+
+        if(instance == null){
+            instance = new BluetoothManager();
+            return instance;
+        }else
+            return instance;
+    }
+
+    private BluetoothManager(){
 
         adapter = BluetoothAdapter.getDefaultAdapter();
         if(adapter == null){
@@ -44,9 +56,13 @@ public class BluetoothManager {
         return adapter.getBondedDevices();
     }
 
+    public void runConnectedThread(){
+        connectedThread.run();
+
+    }
+
     private void manageConnectedSocket(BluetoothSocket socket){
-
-
+        connectedThread = new ConnectedThread(socket);
 
     }
 
