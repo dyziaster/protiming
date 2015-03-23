@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -24,6 +25,11 @@ public class BluetoothManager {
     public BluetoothManager(){
 
         adapter = BluetoothAdapter.getDefaultAdapter();
+        if(adapter == null){
+
+            Log.i("BluetoothManager","adapter is null");
+
+        }
 
     }
 

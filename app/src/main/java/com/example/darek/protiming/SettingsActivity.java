@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,26 +14,32 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
 
 /**
  * Created by Darek on 2015-03-21.
  */
 public class SettingsActivity extends Activity{
-
-
-
     private Button discoverButton;
+    private BluetoothManager manager;
+    private Set<BluetoothDevice> devices;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) { // must enable BT first
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        manager = new BluetoothManager();
 
+        if(!manager.bluetoothEnabled()){
+            Log.i("SettingsActivity","bluetooth turned off");
+            return;
+        }
 
         discoverButton = (Button)findViewById(R.id.discoverButton);
         discoverButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                BluetoothThread.discoverDevices();
+                devices = manager.getBondedDevices();
                 Toast.makeText(getApplicationContext(), "discovering", Toast.LENGTH_LONG).show();
             }
         });
