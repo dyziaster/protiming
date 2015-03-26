@@ -17,7 +17,7 @@ import java.util.Set;
  * Created by Darek on 2015-03-23.
  */
 public class BluetoothManager { // added comment from przymorze
-
+    // ocmment from master
     private BluetoothAdapter adapter;
     private Set<BluetoothDevice> devices;
     private ConnectThread connectThread;
