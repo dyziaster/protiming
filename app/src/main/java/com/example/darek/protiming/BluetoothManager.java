@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -52,9 +53,10 @@ public class BluetoothManager { // added comment from przymorze
     }
 
 
-    public Set<BluetoothDevice> getBondedDevices(){
-
-        return adapter.getBondedDevices();
+    public String[] getBondedDevices(){
+        Set<BluetoothDevice> set = adapter.getBondedDevices();
+        String[] devices = set.toArray(new String[set.size()]);
+        return devices;
     }
 
     public void runConnectedThread(){
