@@ -78,7 +78,7 @@ public class SettingsActivity extends Activity{
     private void populateList(){
 
 
-        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,tmp);
+        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,manager.getBondedDevices());
         listView.setAdapter(arrayAdapter);
 
     }
