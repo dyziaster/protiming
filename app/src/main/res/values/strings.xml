@@ -6,6 +6,7 @@
     <string name="pauseButtonLabel">Pause</string>
     <string name="startButtonLabel">Start</string>
     <string name="settingsButtonLabel">settings</string>
+    <string name="resultsButtonLabel">results</string>
     <string name="discoverButtonLabel">discover</string>
     <string name="checkTransmisionButtonLabel">check Transmision</string>
 </resources>

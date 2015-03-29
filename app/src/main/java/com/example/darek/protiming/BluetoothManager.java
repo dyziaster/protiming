@@ -3,7 +3,10 @@ package com.example.darek.protiming;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -12,7 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Darek on 2015-03-23.
@@ -27,6 +32,7 @@ public class BluetoothManager { // added comment from przymorze
     private static BluetoothManager instance;
 
 
+
     public static BluetoothManager getInstance(){
 
         if(instance == null){
@@ -39,24 +45,20 @@ public class BluetoothManager { // added comment from przymorze
     private BluetoothManager(){
 
         adapter = BluetoothAdapter.getDefaultAdapter();
+        devices = new HashSet<BluetoothDevice>();
         if(adapter == null){
-
             Log.i("BluetoothManager","adapter is null");
-
         }
 
     }
 
     public boolean bluetoothEnabled(){
-
         return adapter.isEnabled();
     }
 
 
-    public String[] getBondedDevices(){
-        Set<BluetoothDevice> set = adapter.getBondedDevices();
-        String[] devices = set.toArray(new String[set.size()]);
-        return devices;
+    public Set<BluetoothDevice> getBondedDevices(){
+        return adapter.getBondedDevices();
     }
 
     public void runConnectedThread(){
@@ -69,9 +71,29 @@ public class BluetoothManager { // added comment from przymorze
 
     }
 
+    public void runConnectThread(BluetoothDevice d) {
+
+        new ConnectThread(d).run();
+
+    }
+
+    public void startDiscovery() {
+        adapter.startDiscovery();
+    }
+
+    public boolean isDiscovering() {
+        return adapter.isDiscovering();
+    }
+
+    public void cancelDiscovery() {
+        adapter.cancelDiscovery();
+    }
+
+
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
@@ -82,8 +104,8 @@ public class BluetoothManager { // added comment from przymorze
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
-                tmp = device.createRfcommSocketToServiceRecord(mmDevice.getUuids()[0].getUuid());
-            } catch (IOException e) { }
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
+            } catch (IOException e) { Log.i("",e.toString()); }
             mmSocket = tmp;
         }
 
@@ -104,7 +126,7 @@ public class BluetoothManager { // added comment from przymorze
             }
 
             // Do work to manage the connection (in a separate thread)
-            manageConnectedSocket(mmSocket);
+           // manageConnectedSocket(mmSocket);
         }
 
         /** Will cancel an in-progress connection, and close the socket */

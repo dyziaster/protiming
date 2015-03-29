@@ -1,8 +1,6 @@
 package com.example.darek.protiming;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -10,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
@@ -26,12 +25,25 @@ public class MainActivity extends Activity {
     private long startTime = 0L;
     private Handler customHandler = new Handler();
     private BluetoothManager manager;
+    private Parser parser;
+    private Controler controler;
+    private Timer t;
 
+    public float getTime() {
+        return time;
+    }
+
+    private float time;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parser = new Parser(this);
         setContentView(R.layout.main);
         manager = BluetoothManager.getInstance();
+        controler = Controler.getInstance();
+
+        if(manager.bluetoothEnabled())
+            Toast.makeText(getBaseContext(), "bt", Toast.LENGTH_LONG).show();
 
         paused = true;
         timerValue = (TextView)findViewById(R.id.timerValue);
@@ -40,8 +52,8 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                manager.runConnectedThread(); // before set bluetooth start must be disabled
-                startTimer();
+              //  manager.runConnectedThread(); // before set bluetooth start must be disabled
+                t.startTimer();
             }
         });
 
@@ -49,9 +61,8 @@ public class MainActivity extends Activity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-
-                pauseTimer();
-
+                t.pauseTimer();
+                Toast.makeText(getApplicationContext(),t.getTime().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -93,40 +104,14 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    private Runnable updateTimerThread = new Runnable() {
+    public void startResults(View view){
 
-        public void run() {
-
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
-
-            updatedTime = timeSwapBuff + timeInMilliseconds;
-
-            int secs = (int) (updatedTime / 1000);
-            int mins = secs / 60;
-            secs = secs % 60;
-            int milliseconds = (int) (updatedTime % 1000);
-            timerValue.setText("" + mins + ":"
-                    + String.format("%02d", secs) + ":"
-                    + String.format("%03d", milliseconds));
-            customHandler.postDelayed(this, 0);
-        }
-
-    };
-
-    public void startTimer(){
-        if(paused){
-            startTime = SystemClock.uptimeMillis();
-            customHandler.postDelayed(updateTimerThread, 0);
-            paused = false;}
-    }
-
-    public void pauseTimer(){
-        if(!paused){
-            timeSwapBuff += timeInMilliseconds;
-            customHandler.removeCallbacks(updateTimerThread);
-            paused = true;}
+        Intent intent = new Intent(this, ResultsActivity.class);
+        startActivity(intent);
     }
 
 
-
+    public void setText(String text) {
+        timerValue.setText(text);
+    }
 }

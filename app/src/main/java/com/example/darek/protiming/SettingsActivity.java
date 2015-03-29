@@ -1,12 +1,13 @@
 package com.example.darek.protiming;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,11 +16,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,53 +31,72 @@ public class SettingsActivity extends Activity{
     ArrayAdapter<String> arrayAdapter;
     ListView listView;
     private String[] tmp = new String[]{"awdawda","awdwada"};
+    private Map<String,BluetoothDevice> map;
 
     @Override
     public void onCreate(Bundle savedInstanceState) { // must enable BT first
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         manager = BluetoothManager.getInstance();
-        /*
+        map = new HashMap<String,BluetoothDevice>();
+        devices = new HashSet<BluetoothDevice>();
         if(!manager.bluetoothEnabled()){
             Log.i("SettingsActivity","bluetooth turned off");
             return;
         }
-        */
+
         discoverButton = (Button)findViewById(R.id.discoverButton);
         discoverButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                //devices = manager.getBondedDevices();
-                populateList(); // need to implement return from BT devices>tostring>toarrayadapter.
-                Toast.makeText(getApplicationContext(), "discovering", Toast.LENGTH_LONG).show();
+
+                try{
+                discover();
+                }catch ( Exception e) {
+                    Log.i("","discover error");
+                }
+
+              //  Toast.makeText(getApplicationContext(), "discovering", Toast.LENGTH_LONG).show();
             }
         });
 
         listView = (ListView) findViewById(R.id.listview);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-                // ListView Clicked item value
                 String  itemValue    = (String) listView.getItemAtPosition(position);
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(getApplicationContext(),"Position :"+position+"  ListItem : " +itemValue , Toast.LENGTH_LONG).show();
+                manager.runConnectThread(map.get(itemValue));
             }
+
+
+
+
         });
 
-        //listView.setOnItemClickListener();
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(mReceiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        this.registerReceiver(mReceiver, filter);
     }
 
+    private void discover(){
+
+        if (manager.isDiscovering()) {
+            manager.cancelDiscovery();
+        }
+        devices.clear();
+        manager.startDiscovery();
+
+    }
     private void populateList(){
-
-
-        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,manager.getBondedDevices());
+        for(BluetoothDevice d : devices){
+            map.put(d.getName(),d);
+        }
+        String[] keySet = map.keySet().toArray(new String[map.keySet().size()]);
+        arrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,keySet);
         listView.setAdapter(arrayAdapter);
 
     }
@@ -108,6 +126,24 @@ public class SettingsActivity extends Activity{
         super.onDestroy();
         // The activity is about to be destroyed.
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+
+
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                devices.add(device);
+                Toast.makeText(getApplicationContext(), "adding device", Toast.LENGTH_SHORT).show();
+            }
+            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                populateList();
+                Toast.makeText(getApplicationContext(), "finished discovery", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
 
 }
