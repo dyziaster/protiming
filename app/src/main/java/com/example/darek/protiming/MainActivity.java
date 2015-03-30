@@ -1,9 +1,13 @@
 package com.example.darek.protiming;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +18,9 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 
-    long timeInMilliseconds = 0L;
-    long timeSwapBuff = 0L;
-    long updatedTime = 0L;
+    private long timeInMilliseconds = 0L;
+    private long timeSwapBuff = 0L;
+    private long updatedTime = 0L;
     private Button startButton;
     private Button pauseButton;
     private Button settingsButton;
@@ -43,16 +47,28 @@ public class MainActivity extends Activity {
         controler = Controler.getInstance();
 
         if(manager.bluetoothEnabled())
-            Toast.makeText(getBaseContext(), "bt", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "bluetooth is enabled", Toast.LENGTH_LONG).show();
 
         paused = true;
         timerValue = (TextView)findViewById(R.id.timerValue);
+        initButtons();
+
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(mReceiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        this.registerReceiver(mReceiver, filter);
+
+    }
+
+    private void initButtons(){
+
 
         startButton = (Button)findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-              //  manager.runConnectedThread(); // before set bluetooth start must be disabled
+                //  manager.runConnectedThread(); // before set bluetooth start must be disabled
                 t.startTimer();
             }
         });
@@ -74,7 +90,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // The activity is about to become visible.
+
+        if(false){
+
+            controler.discoverDevice();
+            controler.pairDevice();
+            controler.connectDevice();
+
+        }
+
     }
     @Override
     protected void onResume() {
@@ -114,4 +138,28 @@ public class MainActivity extends Activity {
     public void setText(String text) {
         timerValue.setText(text);
     }
+
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+
+
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                controler.add(device);
+                Toast.makeText(getApplicationContext(), "adding device", Toast.LENGTH_SHORT).show();
+            }
+            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                if(controler.findHC05()){
+                    Toast.makeText(getApplicationContext(), "device is visible", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "could not find the device", Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(getApplicationContext(), "finished discovery", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }

@@ -1,10 +1,13 @@
 package com.example.darek.protiming;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Darek on 2015-03-29.
@@ -73,7 +76,39 @@ public class Controler {
 
     }
 
-   // public String getTime(){
+    public void discoverDevice() {
+
+        if (manager.isDiscovering()) {
+            manager.cancelDiscovery();
+        }
+        manager.clearDevices();
+        manager.startDiscovery();
+    }
+
+    public void pairDevice() {
+
+    }
+
+    public void connectDevice() {
+
+    }
+
+    public void add(BluetoothDevice device) {
+
+        manager.add(device);
+    }
+
+    public boolean findHC05() {
+
+        for(BluetoothDevice device: manager.getDevices()){
+
+            if(device.getName().equals("HC-05"))
+                return true;
+        }
+        return false;
+    }
+
+    // public String getTime(){
         //return timer.getTime();
    // }
 

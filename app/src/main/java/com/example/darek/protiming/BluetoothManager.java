@@ -26,6 +26,11 @@ public class BluetoothManager { // added comment from przymorze
 
     // ocmment from master
     private BluetoothAdapter adapter;
+
+    public Set<BluetoothDevice> getDevices() {
+        return devices;
+    }
+
     private Set<BluetoothDevice> devices;
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
@@ -87,6 +92,14 @@ public class BluetoothManager { // added comment from przymorze
 
     public void cancelDiscovery() {
         adapter.cancelDiscovery();
+    }
+
+    public void add(BluetoothDevice device) {
+        devices.add(device);
+    }
+
+    public void clearDevices() {
+        devices.clear();
     }
 
 

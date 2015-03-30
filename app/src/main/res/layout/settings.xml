@@ -3,40 +3,97 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#ffffff"
+    android:background="#000000"
     android:layout_height="match_parent" >
 
 
-    <Button
-        android:id="@+id/discoverButton"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/discoverButtonLabel" />
-
-    <ListView
-
-        android:id="@+id/listview"
+    <TextView
+        android:id="@+id/gatesNumber"
         android:layout_width="wrap_content"
-        android:layout_height="220dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="150dp"
-        android:background="#ffffff"
-        android:textColor="#000000"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="35dp"
+        android:text="Gates number"
+        android:textSize="40dp"
+        android:textColor="#ffffffff"
+        />
 
-        >
-    </ListView>
+
+    <NumberPicker
+        android:id="@+id/number_picker"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/number_picker"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/setting1"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/line1"
+        android:text="setting1"
+        android:textSize="30dp"
+        android:textColor="#ffffffff"
+
+        />
+    <CheckBox
+        android:id="@+id/checkbox_meat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/line1"
+        android:layout_alignParentRight="true"
+        android:onClick="onCheckboxClicked"/>
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/setting1"
+        android:background="@android:color/darker_gray"/>
 
 
-    <Button
-        android:id="@+id/transmisionButton"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="@string/checkTransmisionButtonLabel" />
+    <TextView
+        android:id="@+id/setting2"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/line2"
+        android:text="setting2"
+        android:textSize="30dp"
+        android:textColor="#ffffffff"
+        />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/setting2"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/setting3"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/line3"
+        android:text="setting3"
+        android:textSize="30dp"
+        android:textColor="#ffffffff"
+        />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/setting3"
+        android:background="@android:color/darker_gray"/>
+
 
 </RelativeLayout>

@@ -36,8 +36,8 @@ public class ResultsActivity extends Activity {
         resultsHolder.getInstance();
 
         expListView = (ExpandableListView) findViewById(R.id.laptop_list);
-        final ExpandableAdapter expListAdapter = new ExpandableAdapter(this,  resultsHolder.getGroupList(), null);
-        expListView.setAdapter(expListAdapter);
+      //  final ExpandableAdapter expListAdapter = new ExpandableAdapter(this,  resultsHolder.getGroupList(), null);
+     //   expListView.setAdapter(expListAdapter);
         //setGroupIndicatorToRight();
 
     }
